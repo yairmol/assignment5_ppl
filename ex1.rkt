@@ -63,7 +63,7 @@
   (lambda (n)
     (cons-lzl n (lambda () (integers-from (+ n 1))))))
 (define ints (integers-from 0))
-(take (lzl-map (lambda (x) (* x x)) ints) 5)
+;(take (lzl-map (lambda (x) (* x x)) ints) 5)
 
 ;; Signature: lz-lst-filter(p,lz)
 ;; Type: [[T1 -> Boolean] * Lzl(T1) -> LzL(T1)]
@@ -88,7 +88,7 @@
                                    (tail lzl)))))))
                                    
 (define primes1 (sieve (integers-from 2)))
-(take primes1 7)
+;(take primes1 7)
 
 ;; Signature: integers-iterate(f,n)
 ;; Type: [[Number -> Number] * Number -> Lzl(Number)]
@@ -96,13 +96,13 @@
   (lambda (f n)
     (cons-lzl n (lambda () (integers-iterate f (f n))))))
 
-(take (integers-iterate (lambda (k) (+ k 1)) 3) 7)
+;(take (integers-iterate (lambda (k) (+ k 1)) 3) 7)
 ;; --> ’(3 4 5 6 7 8 9)
 
-(take (integers-iterate (lambda (k) (* k 2)) 3) 7)
+;(take (integers-iterate (lambda (k) (* k 2)) 3) 7)
 ;; ’(3 6 12 24 48 96 192)
 
-(take (integers-iterate (lambda (k) k) 3) 7)
+;(take (integers-iterate (lambda (k) k) 3) 7)
 ;; --> ’(3 3 3 3 3 3 3)
 
 ;; Primes – First definition
@@ -137,6 +137,11 @@
   (lambda (guess x)
     (abs (- (square guess) x))))
 
+(define good-enough?
+  (lambda (guess x epsilon)
+    (< (abs (- (square guess) x)) epsilon)))
+
+
 (define sqrt-lzl-iter
   (lambda (x guess)
     (cons-lzl (cons guess (accuary guess x))
@@ -151,10 +156,20 @@
             (head lzlst)
             (find-first (tail lzlst) p)))))
 
-(display "1.b\n")
+(define sqrt2
+  (lambda (x init epsilon)
+    (car (find-first (sqrt-lzl x init)
+                (lambda (guess) (good-enough? (car guess) x epsilon))))))
+
+
+
+
+(display "1.2.a\n")
 (take (sqrt-lzl 2 1) 5)
-(display "1.c\n")
+(display "1.2.b\n")
 (find-first (integers-from 1) (lambda (x) (> x 10)))
 (find-first (cons-lzl 1 (lambda() (cons-lzl 2 (lambda () '())))) (lambda (x) (> x 10)))
+(display "1.2.c\n")
+(sqrt2 2 1 0.0001)
  
 
